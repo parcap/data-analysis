@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "suppressWarnings(suppressMessages(library(readxl)))\nsuppressWarnings(suppressMessages(library(dplyr)))\n\ntrades <- read_excel('trade_behavior_analysis.xlsx', sheet = 'transactions')\nholdings <- read_excel('trade_behavior_analysis.xlsx', sheet = 'holdings')\n\nbehave <- trades %>% left_join(holdings, by = c('date', 'manager', 'igid', 'ticker', 'type')) %>% \n                     filter(!is.na(price)) %>%\n                     mutate(shares_sod = shares_eod - quantity, side = ifelse(shares_sod < 0 | shares_eod < 0, 'Short', 'Long'),\n                            side_by_type = ifelse(type == 'Options - Puts' & side == 'Short', 'Long', ifelse(type == 'Options - Puts' & side == 'Long', 'Short', side))) %>% \n                     select(date, igid, price, manager, side_by_type, shares_sod, shares_eod, type, ticker, quantity) %>% \n                     arrange(manager, igid, date, ticker)\n\n\nwrite.csv(behave, 'data.csv')",
+    "created" : 1531345461286.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2686283710",
+    "id" : "CCD7EA1",
+    "lastKnownWriteTime" : 1531350658,
+    "last_content_update" : 1531350658008,
+    "path" : "C:/Users/njathar/Desktop/parcap-github/data-analysis/transactions_data_analysis.R",
+    "project_path" : "transactions_data_analysis.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
